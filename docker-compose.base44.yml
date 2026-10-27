@@ -1,0 +1,80 @@
+# ---------------------------------------------------------------------------
+# محیط توسعهٔ مستر کباب (Base44)
+# ---------------------------------------------------------------------------
+# سرویس‌ها از تصویر پایهٔ Node اجرا می‌شوند و کد از همین مخزن به داخل کانتینر
+# bind می‌شود؛ بنابراین هر ویرایشی در فایل‌ها بدون بازسازی ایمیج اعمال می‌شود.
+# وابستگی‌ها هنگام بالا آمدن کانتینر و بر اساس فایل قفل (package-lock.json)
+# همگام می‌شوند، چون پوشهٔ node_modules روی والیوم نگه داشته می‌شود.
+#
+# BASE44_PREVIEW_MODE فقط به‌صورت «عبور داده‌شده» (بدون مقدار ثابت) ارسال می‌شود؛
+# تنظیمات ویژهٔ پیش‌نمایش (اجازهٔ دامنهٔ سندباکس در allowlist ویت) در vite.config.ts
+# روی مقدار دقیق "1" قفل شده است و در غیر آن، رفتار پیش‌فرض حفظ می‌شود.
+name: mister-kebab
+
+services:
+  api:
+    image: node:22
+    working_dir: /app/server
+    command:
+      - sh
+      - -ec
+      - npm install --no-audit --no-fund && exec node --watch index.js
+    environment:
+      - NODE_ENV=development
+      - PORT=8000
+      - DB_PATH=/data/mister-kebab.sqlite
+      - BASE44_PREVIEW_MODE
+    volumes:
+      - ./:/app
+      - api-node-modules:/app/server/node_modules
+      - api-data:/data
+    restart: on-failure
+    labels:
+      base44.project: "مستر کباب (API)"
+      base44.kind: "api"
+      base44.docs: "/api/health"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8000/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 90s
+
+  web:
+    image: node:22
+    working_dir: /app
+    command:
+      - sh
+      - -ec
+      - npm ci --no-audit --no-fund && exec npm run dev -- --host 0.0.0.0 --port 3000
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      # API روی همان مبدأ (پراکسی ویت) سرو می‌شود؛ کوکی/نشست بین دو دامنه جابه‌جا نمی‌شود.
+      - VITE_API_TARGET=http://api:8000
+      - BASE44_PREVIEW_MODE
+      - BASE44_SANDBOX_HOST_DOMAIN
+      - __VITE_ADDITIONAL_SERVER_ALLOWED_HOSTS
+    volumes:
+      - ./:/app
+      - web-node-modules:/app/node_modules
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: on-failure
+    labels:
+      base44.project: "مستر کباب"
+      base44.kind: "web"
+      base44.port: "3000"
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:3000/"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 150s
+
+volumes:
+  web-node-modules:
+  api-node-modules:
+  api-data:

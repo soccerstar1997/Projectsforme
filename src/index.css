@@ -1,0 +1,253 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =========================================================================
+   مستر کباب — نظام طراحی «زعفران سینمایی»
+   پس‌زمینهٔ زغالی، متن عاجی، تأکید کهربایی. کنتراست متن اصلی روی پس‌زمینهٔ
+   تاریک بسیار بالا نگه داشته شده و ویدیوها همیشه با لایهٔ تاریک‌کننده همراه‌اند.
+   ========================================================================= */
+
+@layer base {
+  :root {
+    --brand-charcoal: #111111;
+    --brand-hearth: #191715;
+    --brand-ivory: #f6f0e7;
+    --brand-muted: #b7aea3;
+    --brand-amber: #d99a43;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+    background-color: var(--brand-charcoal);
+  }
+
+  body {
+    @apply bg-charcoal font-sans text-ivory antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-bold text-ivory;
+    line-height: 1.38;
+    text-wrap: balance;
+  }
+
+  p {
+    line-height: 1.85;
+  }
+
+  /* حلقهٔ فوکوس همیشه دیده‌شود: ۲px کهربایی با فاصلهٔ ۴px */
+  :focus-visible {
+    outline: 2px solid var(--brand-amber);
+    outline-offset: 4px;
+    border-radius: 8px;
+  }
+
+  ::selection {
+    background-color: rgba(217, 154, 67, 0.28);
+    color: var(--brand-ivory);
+  }
+
+  [id] {
+    scroll-margin-top: 6rem;
+  }
+
+  /* پرش سریع به محتوا برای کاربران کیبورد (کاربر ویدیوها را نمی‌بیند) */
+  .skip-link {
+    position: fixed;
+    inset-block-start: -100px;
+    inset-inline-start: 1rem;
+    z-index: 100;
+    padding: 0.75rem 1.25rem;
+    border-radius: 999px;
+    background-color: var(--brand-amber);
+    color: #111111;
+    font-weight: 700;
+    transition: inset-block-start 0.2s ease;
+  }
+  .skip-link:focus {
+    inset-block-start: 1rem;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #141312;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #38322b;
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #4b4239;
+  }
+}
+
+@layer components {
+  /* شبکهٔ اصلی صفحه */
+  .shell {
+    @apply mx-auto w-full max-w-[1280px] px-5 sm:px-8 lg:px-12;
+  }
+
+  /* دکمه‌ها — همه با ارتفاع لمسی حداقل ۴۸px */
+  .btn {
+    @apply inline-flex min-h-[48px] items-center justify-center gap-2 rounded-full px-6 text-[15px] font-semibold transition duration-300;
+  }
+  .btn-primary {
+    @apply btn bg-amber text-[#181410] hover:bg-amber-soft active:bg-amber-deep;
+    box-shadow: 0 18px 45px -24px rgba(217, 154, 67, 0.85);
+  }
+  .btn-outline {
+    @apply btn border border-ivory/25 bg-white/[0.03] text-ivory backdrop-blur-sm hover:border-amber/70 hover:text-amber;
+  }
+  .btn-quiet {
+    @apply btn text-ivory/85 hover:text-amber;
+  }
+  .btn-sm {
+    @apply min-h-[48px] px-5 text-sm;
+  }
+
+  .eyebrow {
+    @apply inline-flex items-center gap-3 text-[13px] font-semibold tracking-[0.22em] text-amber;
+  }
+
+  .display-1 {
+    font-size: clamp(2.05rem, 5.6vw, 4rem);
+    line-height: 1.28;
+    letter-spacing: -0.01em;
+  }
+  .display-2 {
+    font-size: clamp(1.7rem, 3.6vw, 2.85rem);
+    line-height: 1.35;
+  }
+  .display-3 {
+    font-size: clamp(1.35rem, 2.3vw, 1.85rem);
+    line-height: 1.45;
+  }
+
+  .lede {
+    @apply text-[17px] leading-[1.9] text-muted sm:text-lg;
+  }
+
+  .panel {
+    @apply rounded-xl3 border border-ivory/10 bg-hearth/70;
+    backdrop-filter: blur(6px);
+  }
+
+  .chip {
+    @apply inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium;
+  }
+  .chip-amber {
+    @apply chip border-amber/40 bg-amber/10 text-amber-soft;
+  }
+  .chip-muted {
+    @apply chip border-ivory/15 bg-white/[0.04] text-muted;
+  }
+  .chip-off {
+    @apply chip border-burgundy/60 bg-burgundy/20 text-[#E9A9A9];
+  }
+
+  /* فرم‌ها — خط زیرین که در فوکوس کهربایی می‌شود */
+  .field {
+    @apply w-full min-h-[48px] rounded-xl2 border border-ivory/10 bg-white/[0.035] px-4 py-3 text-[15px] text-ivory transition duration-200;
+    border-block-end: 1px solid rgba(246, 240, 231, 0.22);
+  }
+  .field::placeholder {
+    color: rgba(183, 174, 163, 0.6);
+  }
+  .field:hover {
+    border-color: rgba(217, 154, 67, 0.35);
+  }
+  .field:focus {
+    border-color: rgba(217, 154, 67, 0.9);
+    background-color: rgba(255, 255, 255, 0.06);
+    outline: none;
+  }
+  .field[aria-invalid='true'] {
+    border-color: rgba(229, 115, 115, 0.85);
+  }
+  .field-label {
+    @apply mb-2 block text-sm font-semibold text-ivory/90;
+  }
+  .field-error {
+    @apply mt-2 block text-[13px] text-[#F0A9A9];
+  }
+  .field-hint {
+    @apply mt-2 block text-[12.5px] text-muted/85;
+  }
+}
+
+@layer utilities {
+  /* انیمیشن ورود بخش‌ها: آرام، کوتاه و قابل خاموش‌شدن */
+  .reveal {
+    opacity: 0;
+    transform: translateY(26px);
+    transition:
+      opacity 0.85s cubic-bezier(0.2, 0.7, 0.2, 1),
+      transform 0.85s cubic-bezier(0.2, 0.7, 0.2, 1);
+    will-change: opacity, transform;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+  }
+
+  .text-shadow-soft {
+    text-shadow: 0 2px 22px rgba(0, 0, 0, 0.65);
+  }
+
+  /* لایه‌های تاریک‌کننده روی ویدیوها برای خوانایی متن */
+  /* لایه‌ای که متن را خوانا نگه می‌دارد و در عین حال سوژهٔ غذا را نشان می‌دهد */
+  .veil-hero {
+    background:
+      radial-gradient(115% 85% at 84% 42%, rgba(17, 17, 17, 0.12) 0%, rgba(17, 17, 17, 0.68) 58%, rgba(17, 17, 17, 0.94) 100%),
+      linear-gradient(to left, rgba(17, 17, 17, 0.86) 0%, rgba(17, 17, 17, 0.28) 48%, rgba(17, 17, 17, 0.55) 100%);
+  }
+  .veil-soft {
+    background: linear-gradient(to top, rgba(17, 17, 17, 0.94) 0%, rgba(17, 17, 17, 0.62) 55%, rgba(17, 17, 17, 0.86) 100%);
+  }
+  .veil-strong {
+    background: linear-gradient(to top, rgba(11, 10, 9, 0.96) 0%, rgba(11, 10, 9, 0.72) 50%, rgba(11, 10, 9, 0.9) 100%);
+  }
+  .fade-top {
+    background: linear-gradient(to bottom, #111111 0%, rgba(17, 17, 17, 0) 100%);
+  }
+  .fade-bottom {
+    background: linear-gradient(to top, #111111 0%, rgba(17, 17, 17, 0) 100%);
+  }
+
+  .hide-scrollbar {
+    scrollbar-width: none;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* احترام به تنظیم «کاهش حرکت» سیستم */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .reveal,
+  .reveal.is-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}

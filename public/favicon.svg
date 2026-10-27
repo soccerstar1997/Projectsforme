@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="مستر کباب">
+  <rect width="64" height="64" rx="14" fill="#111111" />
+  <path
+    d="M32 12c6 7 10 12 10 18a10 10 0 0 1-20 0c0-6 4-11 10-18Z"
+    fill="#D99A43"
+    opacity="0.9"
+  />
+  <path d="M32 22c3 4 5 7 5 10a5 5 0 0 1-10 0c0-3 2-6 5-10Z" fill="#F6F0E7" opacity="0.85" />
+  <path d="M14 50h36" stroke="#B7AEA3" stroke-width="3" stroke-linecap="round" />
+</svg>
